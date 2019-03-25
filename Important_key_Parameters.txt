@@ -1,0 +1,56 @@
+Brush dc motors 
+ has iron and ironless
+ironless for better efficiency as it has no ironloss and very low inductance. Efficiency upto 90% 
+
+BLDC
+available ftrom 8mm to 35mm
+reduced dependency on bearings and brushes with the help of electronic commutation 
+has slot and slotless
+slotless has advantage of no cogging or detent torque, and has less iron loss than the slotted design
+
+Stepper motors
+also a BLDC
+has many poles and has many stable position per revolution
+could not run at high speed
+Best stepper motor with disc magnet - low ironloss and inertia,higher efficinecy
+
+
+
+important parameters:
+normal blood glucose level - 60-110mg/dl (milligram/decilitre) 1mg/dl = 0.01 kg/m3
+cannula should be replaced afte 72 hours (3 days) and Reservoir should be replaced after 7 days to prevent occlusion
+reservoir - 300 units(3ml)
+ATmega16 
+insulin infusion rate u(t)
+One of the better-known, more effective diabetes control
+systems is a Relative proportional control law(RPC)
+
+The Daily Dose :
+Q(U) = [A(mg/dl)-100]x10xB(Kg)x0.6÷1000÷2]
+Where, A=BG, B=Weight of patient
+
+The Volume of insulin syringe (VI)- to be
+delivered decides total linear displacement of
+piston VI=0.013mm. Linear travel by motor /step
+
+Insulin piston displacement per step decides the
+insulin delivery rate as per the range of the system:
+Delivery /Step = 0.2µl/min to 200µl/min
+(0.029U/min-20U/min)
+
+BOD-Brown Out Detection
+
+BASCOM and AVR Studio4 SPI interface
+
+optional:
+reciprocating piston pump
+
+Keywords:
+CSII = Continuous Subcutaneous Insulin Injection
+CGMS = Continuous Glucose Monitoring System
+
+Components:
+
+6 Hardware input buttons
+LPC2148 or ATmega 16
+BLDC disc magnet Mini stepper motor

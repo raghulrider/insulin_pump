@@ -1,0 +1,6 @@
+Brush 
+
+Stepper Motor:
+-Bipolar is better than unipolar stepper motor
+-permanent Magnet stepper motor
+-Microstepping

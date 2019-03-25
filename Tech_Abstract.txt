@@ -1,0 +1,21 @@
+User replaceable catridge usually about 200 Units
+piston slowly pressed by the pump
+output of reservoir is connected to flexible tubing going to the patient’s subcutaneous (Under the skin)injection site, usually on the abdomen.
+Continuos blood glucose monitoring - subcutaneous  sensor - implantable wireless biosensor
+pump weighs between - 60g to 150g
+MAXQ2010 
+The 16-bit MCU draws just 1 mA when operating at 1 MHz and 2.7 V, and just 370 nA in stop mode. Such low power consumption is critical to maximize the battery life in the insulin pump. Like most other MCUs, the MAX2010 packs USARTs, timers, 64 kbytes of Flash-based program storage, 2 kbytes of RAM, some general-purpose I/O pins, a 312.5 ksample/s 12-bit successive-approximation ADC with reference, a 160-segment LCD controller, and still other resources. It also offers a fast wake-up from sleep and stop modes, which would make the insulin pump more responsive to user needs.
+
+Glucose + Potassium ferricyanide + Glucpse oxidase(catalyst) --> gluconolactone + ferrocyanide
+
+pump weighs between - 60g to 150g
+Insulin pump typically operates betweeen 1.5v to 2v
+The MAX1947 is a compact, high-efficiency, step-up DC-DC converter that regulates output voltages from 1.8V to 3.3V
+for volatage regulation Buck regulators with skip mode will have good light-load efficiency; however, low-dropout linear regulators (LDOs) yield physically smaller solutions
+MAXQ2010 
+The 16-bit MCU draws just 1 mA when operating at 1 MHz and 2.7 V, and just 370 nA in stop mode. Such low power consumpztion is critical to maximize the battery life in the insulin pump. Like most other MCUs, the MAX2010 packs USARTs, timers, 64 kbytes of Flash-based program storage, 2 kbytes of RAM, some general-purpose I/O pins, a 312.5 ksample/s 12-bit successive-approximation ADC with reference, a 160-segment LCD controller, and still other resources. It also offers a fast wake-up from sleep and stop modes, which would make the insulin pump more responsive to user needs.
+use single AA or AAA alkaline or lithium batteries
+
+LPC2148 - Controller
+Wifi - ESP8266
+

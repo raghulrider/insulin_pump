@@ -1,0 +1,6 @@
+Motor:
+https://v-motor.en.alibaba.com/product/1548019422-220595891/10mm_linear_stepper_motor_permanent_magnet_motor.html?spm=a2700.icbuShop.41413.10.4bf14576JmtRgT
+https://v-motor.en.alibaba.com/product/1542991540-220595891/8mm_micro_stepper_motor_of_camera_lens.html?spm=a2700.icbuShop.41413.8.4bf14576JmtRgT
+https://www.alibaba.com/product-detail/VSM08138-8mm-Micro-slider-Linear-Stepping_60810914864.html?spm=a2700.7724857.normalList.18.3bc9476dYwLq1i&s=p
+Driver:
+https://www.pololu.com/product/2134

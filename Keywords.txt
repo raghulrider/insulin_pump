@@ -1,0 +1,22 @@
+Insulin pump
+Glucose
+Type-1
+Diabetes
+open-loop
+closed loop
+basal rate
+bolus rate
+less cost
+beta cells
+pancreas
+infusion set
+reservoir
+miniaturized motor
+catheter-cannula
+xxx glucose sensor
+semi-automated
+invasive/non-invasive
+secondary pancreas
+needle
+tube/tubeless
+
