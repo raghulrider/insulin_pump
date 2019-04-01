@@ -1,6 +1,6 @@
 //Every data mentioned is decided based on current situation. It will vary when we decide motors and attachments
 
-const int stepPin = 3;
+const int stepPin = 5;
 const int dirPin = 4;
 long pulse;
 long basbol;
@@ -15,19 +15,21 @@ long xxx;
 void setup() {
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
-  attachInterrupt(0,bolus_function,RISING);
   Serial.begin(9600);
+  attachInterrupt(digitalPinToInterrupt(3),bolus_function,FALLING);
+ 
 }
 
 //Main loop for recieving basal or bolus option
 
 void loop()
 {
+  delay(1000);
   basal_function(); //basal rate will provided continuously 
+  delay(1000);
 }
 
 //void loop for basal menu
-
 void basal_function()
 {
   Serial.println("You have entered basal menu");
@@ -93,10 +95,8 @@ else if (bolus_function <= xxx && bolus_function >= xxx)
   max_step = bolus_insulin / 0.8;     //considering it can give 0.5 units per step
   delay_time = 1000;                   //for example alone. its not for final
 }
-void pulse_function();
+pulse_function_bolus();
 }
-
-
 
 //pulse function based on different bolus level
 
