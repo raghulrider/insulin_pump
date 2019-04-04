@@ -10,13 +10,14 @@ long basal_insulin;
 long delay_time;
 long basal_insulin_ph;
 long xxx;
+volatile int flag = false;
 //setup menu
 
 void setup() {
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
   Serial.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(3),bolus_function,FALLING);
+  attachInterrupt(digitalPinToInterrupt(3),bolus_interrupt_flag,RISING);
  
 }
 
@@ -267,4 +268,8 @@ void pulse_function_basal()
     delay(3600000-max_step*(1+delay_time));
   }
   }
+}
+void bolus_interrupt_flag()
+{
+  flag = true;
 }
