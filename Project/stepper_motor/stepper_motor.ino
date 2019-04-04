@@ -110,10 +110,7 @@ void pulse_function_basal()
   {
     while (count < max_step)
     {
-      if (flag == true)
-      {
-        bolus_function();
-      }
+     
       digitalWrite(dirPin, HIGH);
       for (int x = 0; x < pulse; x++)
       {
@@ -126,6 +123,10 @@ void pulse_function_basal()
       Serial.println("Basal Insulin Units Injected:");
       Serial.println(count*0.2);
       delay(delay_time);
+       if (flag == true)
+      {
+        bolus_function();
+      }
     }
     delay(3600000-max_step*(1+delay_time));
   }
@@ -133,10 +134,7 @@ void pulse_function_basal()
   {
     while (count < max_step)
     {
-      if (flag == true)
-      {
-        bolus_function();
-      }
+      
       digitalWrite(dirPin, HIGH);
       for (int x = 0; x < pulse; x++)
       {
@@ -150,6 +148,10 @@ void pulse_function_basal()
       Serial.println("Basal Insulin Units Injected:");
       Serial.println(count*0.5);
       delay(delay_time);
+      if (flag == true)
+      {
+        bolus_function();
+      }
     }
     delay(3600000-max_step*(1+delay_time));
   }
@@ -173,6 +175,17 @@ void pulse_function_basal()
       Serial.println("Basal Insulin Units Injected:");
       Serial.println(count*0.8);
       delay(delay_time);
+      if (flag == true)
+      {
+        delay(2000);
+        bolus_function();
+        flag = false;
+        delay(1000);
+        Serial.println("Bolus Done");
+        delay(1000);
+        Serial.println("Basal resumed");
+        delay(1000);
+      }
     }
     delay(3600000-max_step*(1+delay_time));
   }
@@ -183,10 +196,14 @@ void pulse_function_basal()
 //void loop for bolus menu
 void bolus_function()
 {
-  Serial.println("You have entered bolus menu");
-  Serial.println("Enter the bolus insulin:");
+  Serial.println("");
+  Serial.println("Basal Injection is suspended, it will resume as soon as the bolus injection is provided");
+  Serial.println("");
+  /*Serial.println("Enter the bolus insulin:");
   while (Serial.available() == 0) {}
-  bolus_insulin = Serial.parseInt();
+  bolus_insulin = Serial.parseInt();*/
+  delay(2000);
+  bolus_insulin = 1;
   if (bolus_insulin <= 10)
   {
     pulse = 128;                                               //taking pulse as 256 ie., 16 steps per revolution for bolus injection
@@ -232,8 +249,9 @@ void pulse_function_bolus()
       Serial.println("Bolus Insulin Units Injected:");
       Serial.println(count*0.2);
       delay(delay_time);
+      flag == false;
     }
-     flag == false;
+     
   }
   else if (pulse == 256)
   {
