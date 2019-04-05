@@ -1,5 +1,7 @@
 /*Every data mentioned is decided based on current situation. It will vary when we decide motors and attachments*/
-
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x3F,16,2); 
 const int stepPin = 5;
 const int dirPin = 4;
 long pulse;
@@ -12,9 +14,13 @@ double basal_insulin_ph;
 double hours = 24.00;
 volatile int flag = false;
 unsigned long time_now = 0;
+long volume_finished = 0;
+char welcome[] = "Welcome to Smart Flow!";
 
 //setup menu
 void setup() {
+  lcd.init(); //initialize the lcd
+  lcd.backlight(); //open the backlight
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
   Serial.begin(9600);
@@ -25,6 +31,13 @@ void setup() {
 //Main loop for recieving basal or bolus option
 void loop()
 {
+  lcd.setCursor(15,0);
+  for ( int i = 0; i<26; i++)
+  {
+    lcd.scrollDisplayLeft();
+    lcd.print(welcome[i]);
+    delay(350);
+  }
   delay(1000);
   basal_function(); //basal rate will provided continuously
   delay(1000);
@@ -39,11 +52,23 @@ void bolus_interrupt_flag()
 //void loop for basal menu
 void basal_function()
 {
-  //Serial.println(flag);                                      //uncomment to see the value of flag
-  Serial.println("You have entered basal menu");
-  Serial.println("Enter the basal insulin:");
+  //Serial.println(flag);     //uncomment to see the value of flag
+  lcd.setCursor(0,0);
+  lcd.print("You have entered");
+  lcd.setCursor(0,1);
+  lcd.print("basal menu");
+  //Serial.println("You have entered basal menu");
+  //Serial.println("Enter the basal insulin:");
+  delay(1000);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Enter the ");
+  lcd.setCursor(0,1);
+  lcd.print("basal insulin:");
+  Serial.println("Basal -->");
   while (Serial.available() == 0) {}
   basal_insulin = Serial.parseInt();
+  //lcd.clear();
   if (basal_insulin <= 10)
   {
     basal_insulin_ph = basal_insulin / hours;                     //diving total total insulin units for per hour basal delievery
@@ -72,6 +97,11 @@ void basal_function()
     max_step = basal_insulin_ph / 0.8;                         //considering it can give 0.5 units per step
     delay_time = 2000;                                         //for example alone. its not for final
   }
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Basal set to:");
+  lcd.setCursor(0,1);
+  lcd.print(basal_insulin);
   pulse_function_basal();                                      // this will call the pulse_function_basal() function
 }
 
@@ -96,15 +126,27 @@ void pulse_function_basal()
           delayMicroseconds(500);
         }
         count++;
-        Serial.println("Basal Insulin Units Injected:");
-        Serial.println(count * 0.1);
+        //delay(1000);
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Basal Injected:");
+        lcd.setCursor(0,1);
+        lcd.print(count * 0.1);
+        //Serial.println("Basal Insulin Units Injected:");
+        //Serial.println(count * 0.1);
         delay(delay_time);
         if (flag == true)
         {
-          delay(300);
-          Serial.println("");
-          Serial.println("Wait till the basal finishes");
-          Serial.println("");
+          //delay(300);
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Wait till ");
+          lcd.setCursor(0,1);
+          lcd.print("basal finishes");
+          delay(500);
+          //Serial.println("");
+          //Serial.println("Wait till the basal finishes");
+          //Serial.println("");
         }
       }
       time_now = millis();
@@ -112,13 +154,19 @@ void pulse_function_basal()
       {
         if (flag == true)
         {
-          delay(2000);
+          delay(1000);
           bolus_function();
           flag = false;
           delay(1000);
-          Serial.println("Bolus Done");
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Bolus done");
+          //Serial.println("Bolus Done");
           delay(1000);
-          Serial.println("Basal resumed");
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Basal Resumed");
+          //Serial.println("Basal resumed");
           delay(1000);
         }
       }
@@ -138,15 +186,27 @@ void pulse_function_basal()
           delayMicroseconds(500);
         }
         count++;
-        Serial.println("Basal Insulin Units Injected:");
-        Serial.println(count * 0.2);
+        //delay(1000);
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Basal Injected:");
+        lcd.setCursor(0,1);
+        lcd.print(count * 0.2);
+        //Serial.println("Basal Insulin Units Injected:");
+        //Serial.println(count * 0.2);
         delay(delay_time);
         if (flag == true)
         {
-          delay(300);
-          Serial.println("");
-          Serial.println("Wait till the basal finishes");
-          Serial.println("");
+          //delay(300);
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Wait till ");
+          lcd.setCursor(0,1);
+          lcd.print("basal finishes");
+          delay(500);
+          //Serial.println("");
+          //Serial.println("Wait till the basal finishes");
+          //Serial.println("");
         }
       }
       time_now = millis();
@@ -154,13 +214,19 @@ void pulse_function_basal()
       {
         if (flag == true)
         {
-          delay(2000);
+          delay(1000);
           bolus_function();
           flag = false;
           delay(1000);
-          Serial.println("Bolus Done");
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Bolus done");
+          //Serial.println("Bolus Done");
           delay(1000);
-          Serial.println("Basal resumed");
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Basal Resumed");
+          //Serial.println("Basal resumed");
           delay(1000);
         }
       }
@@ -181,15 +247,27 @@ void pulse_function_basal()
         } Serial.println("Current Pulse Rate:");
         Serial.println(pulse);
         count++;
-        Serial.println("Basal Insulin Units Injected:");
-        Serial.println(count * 0.5);
+        //delay(1000);
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Basal Injected:");
+        lcd.setCursor(0,1);
+        lcd.print(count * 0.5);
+        //Serial.println("Basal Insulin Units Injected:");
+        //Serial.println(count * 0.5);
         delay(delay_time);
         if (flag == true)
         {
-          delay(300);
-          Serial.println("");
-          Serial.println("Wait till the basal finishes");
-          Serial.println("");
+          //delay(300);
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Wait till ");
+          lcd.setCursor(0,1);
+          lcd.print("basal finishes");
+          delay(500);
+          //Serial.println("");
+          //Serial.println("Wait till the basal finishes");
+          //Serial.println("");
         }
       }
       time_now = millis();
@@ -197,13 +275,19 @@ void pulse_function_basal()
       {
         if (flag == true)
         {
-          delay(2000);
+          delay(1000);
           bolus_function();
           flag = false;
           delay(1000);
-          Serial.println("Bolus Done");
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Bolus done");
+          //Serial.println("Bolus Done");
           delay(1000);
-          Serial.println("Basal resumed");
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Basal Resumed");
+          //Serial.println("Basal resumed");
           delay(1000);
         }
       }
@@ -213,10 +297,6 @@ void pulse_function_basal()
     {
       while (count < max_step)
       {
-        if (flag == true)
-        {
-          bolus_function();
-        }
         digitalWrite(dirPin, HIGH);
         for (int x = 0; x < pulse; x++)
         {
@@ -226,15 +306,27 @@ void pulse_function_basal()
           delayMicroseconds(500);
         }
         count++;
-        Serial.println("Basal Insulin Units Injected:");
-        Serial.println(count * 0.8);
+       //delay(1000);
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Basal Injected:");
+        lcd.setCursor(0,1);
+        lcd.print(count * 0.8);
+        //Serial.println("Basal Insulin Units Injected:");
+        //Serial.println(count * 0.8);
         delay(delay_time);
         if (flag == true)
         {
-          delay(300);
-          Serial.println("");
-          Serial.println("Wait till the basal finishes");
-          Serial.println("");
+          //delay(300);
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Wait till ");
+          lcd.setCursor(0,1);
+          lcd.print("basal finishes");
+          delay(500);
+          //Serial.println("");
+          //Serial.println("Wait till the basal finishes");
+          //Serial.println("");
         }
       }
       time_now = millis();
@@ -246,9 +338,15 @@ void pulse_function_basal()
           bolus_function();
           flag = false;
           delay(1000);
-          Serial.println("Bolus Done");
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Bolus done");
+          //Serial.println("Bolus Done");
           delay(1000);
-          Serial.println("Basal resumed");
+          lcd.clear();
+          lcd.setCursor(0,0);
+          lcd.print("Basal Resumed");
+          //Serial.println("Basal resumed");
           delay(1000);
         }
       }
@@ -261,11 +359,22 @@ void pulse_function_basal()
 //void loop for bolus menu
 void bolus_function()
 {
-  Serial.println("");
-  Serial.println("Basal Injection is suspended, it will resume as soon as the bolus injection is provided");
-  Serial.println("");
-  Serial.println("Enter the bolus insulin:");
-  delay(3000);
+  //Serial.println("");
+  //Serial.println("Basal Injection is suspended, it will resume as soon as the bolus injection is provided");
+  //Serial.println("");
+  delay(1000);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Basal Suspended");
+  delay(1000);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Enter the ");
+  lcd.setCursor(0,1);
+  lcd.print("bolus insulin:");
+  Serial.println("Bolus -->");
+  //Serial.println("Enter the bolus insulin:");
+  delay(10000);
   while (Serial.available() == 0) {}
   bolus_insulin = Serial.parseInt();
   delay(2000);
@@ -288,6 +397,11 @@ void bolus_function()
     max_step = bolus_insulin / 0.8;                              //considering it can give 0.5 units per step
     delay_time = 1000;                                           //for example alone. its not for final
   }
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Bolus set to:");
+  lcd.setCursor(0,1);
+  lcd.print(bolus_insulin);
   pulse_function_bolus();
 }
 
@@ -312,13 +426,16 @@ void pulse_function_bolus()
         delayMicroseconds(500);
       }
       count++;
-      Serial.println("Bolus Insulin Units Injected:");
-      Serial.println(count * 0.2);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Bolus Injected");
+      lcd.setCursor(0,1);
+      lcd.print(count * 0.2);
+      //Serial.println("Bolus Insulin Units Injected:");
+      //Serial.println(count * 0.2);
       delay(delay_time);
-      flag == false;
     }
-
-  }
+    }
   else if (pulse == 256)
   {
     while (count < max_step)
@@ -332,11 +449,15 @@ void pulse_function_bolus()
         delayMicroseconds(500);
       }
       count++;
-      Serial.println("Bolus Insulin Units Injected:");
-      Serial.println(count * 0.5);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Bolus Injected");
+      lcd.setCursor(0,1);
+      lcd.print(count * 0.5);
+      //Serial.println("Bolus Insulin Units Injected:");
+      //Serial.println(count * 0.5);
       delay(delay_time);
     }
-    flag == false;
   }
   else if (pulse == 512)
   {
@@ -350,11 +471,14 @@ void pulse_function_bolus()
         digitalWrite(stepPin, LOW);
         delayMicroseconds(500);
       }
-      count++;
-      Serial.println("Bolus Insulin Units Injected:");
-      Serial.println(count * 0.8);
+      lcd.clear();
+      lcd.setCursor(0,0);
+      lcd.print("Bolus Injected");
+      lcd.setCursor(0,1);
+      lcd.print(count * 0.8);
+      //Serial.println("Bolus Insulin Units Injected:");
+      //Serial.println(count * 0.8);
       delay(delay_time);
     }
-    flag == false;
   }
 }
