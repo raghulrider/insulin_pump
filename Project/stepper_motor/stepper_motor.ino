@@ -142,13 +142,23 @@ void bolus_interrupt_flag()
 //void loop for basal menu
 void basal_function()
 {
-  basal_insulin = parameters[0];
+  flag = false;
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Press again");
+  lcd.setCursor(0,1);
+  lcd.print("to Confirm");
+  while ( flag == false){
+    }
+  flag = false;
   lcd.clear();
   lcd.print("Basal Set to:");
   lcd.setCursor(0,1);
-  lcd.print(basal_insulin);
-  lcd.print("");
+  lcd.print(parameters[0]);
+  lcd.print(" ");
   lcd.print("Units");
+  delay(1500);
+  basal_insulin = parameters[0];
   if (basal_insulin <= 10)
   {
     basal_insulin_ph = basal_insulin / hours;                     //diving total total insulin units for per hour basal delievery
@@ -216,9 +226,17 @@ void pulse_function_basal()
           lcd.print("Wait till ");
           lcd.setCursor(0, 1);
           lcd.print("basal finishes");
-          delay(200);
+          flag = false;
+          delay(1000);
         }
       }
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Basal Injected:");
+        lcd.setCursor(0, 1);
+        lcd.print(count * 0.1);
+        lcd.setCursor(5,1);
+        lcd.print("Units");
       time_now = millis();
       while (millis() < time_now  + (3600000 - max_step * (1 + delay_time)))
       {
@@ -274,7 +292,8 @@ void pulse_function_basal()
           lcd.print("Wait till ");
           lcd.setCursor(0, 1);
           lcd.print("basal finishes");
-          delay(500);
+          delay(1000);
+          flag = false;
           //Serial.println("");
           //Serial.println("Wait till the basal finishes");
           //Serial.println("");
@@ -337,7 +356,8 @@ void pulse_function_basal()
           lcd.print("Wait till ");
           lcd.setCursor(0, 1);
           lcd.print("basal finishes");
-          delay(500);
+          delay(1000);
+          flag = false;
           //Serial.println("");
           //Serial.println("Wait till the basal finishes");
           //Serial.println("");
@@ -398,7 +418,8 @@ void pulse_function_basal()
           lcd.print("Wait till ");
           lcd.setCursor(0, 1);
           lcd.print("basal finishes");
-          delay(500);
+          delay(1000);
+          flag  = false;
           //Serial.println("");
           //Serial.println("Wait till the basal finishes");
           //Serial.println("");
@@ -435,12 +456,29 @@ void pulse_function_basal()
 void bolus_function()
 {
   bolus_insulin = parameters[1];
+  delay(200);
+  flag = false;
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Are you sure, ");
+  lcd.setCursor(0,1);
+  lcd.print("suspend basal?");
+  while(flag == false)
+  {
+    
+  }
+  flag = false;
+  delay(1000);
+  lcd.clear();
+  lcd.print("Basal Suspended");
+  delay(1000);
   lcd.clear();
   lcd.print("Bolus Set to:");
   lcd.setCursor(0,1);
   lcd.print(bolus_insulin);
-  lcd.print("");
+  lcd.print(" ");
   lcd.print("Units");
+  delay(2000);
   if (bolus_insulin <= 10)
   {
     pulse = 128;                                               //taking pulse as 256 ie., 16 steps per revolution for bolus injection
