@@ -12,7 +12,8 @@ double basal_insulin_ph;
 double hours = 24.00;
 volatile int flag = false;
 unsigned long time_now = 0;
-long volume_finished = 0;
+long volume_completed = 0;
+int count = 0, count_bol = 0;
 
 
 //Input & Button Logic
@@ -196,38 +197,46 @@ void pulse_function_basal()
   int i;
   for (i = 0; i <= 23 ; i++)
   {
-    int count = 0;
+
     if (pulse == 64)
     {
       while (count < max_step)
       {
-        digitalWrite(dirPin, HIGH);
-        for (int x = 0; x < pulse; x++)
+        if (volume_completed != 300)
         {
-          digitalWrite(stepPin, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin, LOW);
-          delayMicroseconds(500);
-        }
-        count++;
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Basal Injected:");
-        lcd.setCursor(0, 1);
-        lcd.print(count * 0.1);
-        lcd.setCursor(5, 1);
-        lcd.print("Units");
-        delay(delay_time);
-        if (flag == true)
-        {
+          digitalWrite(dirPin, HIGH);
+          for (int x = 0; x < pulse; x++)
+          {
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(500);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(500);
+          }
+          count++;
           lcd.clear();
           lcd.setCursor(0, 0);
-          lcd.print("Wait till ");
+          lcd.print("Basal Injected:");
           lcd.setCursor(0, 1);
-          lcd.print("basal finishes");
-          flag = false;
-          delay(1000);
+          lcd.print(count * 0.1);
+          lcd.setCursor(5, 1);
+          lcd.print("Units");
+          delay(delay_time);
+          if (flag == true)
+          {
+            lcd.clear();
+            lcd.setCursor(0, 0);
+            lcd.print("Wait till ");
+            lcd.setCursor(0, 1);
+            lcd.print("basal finishes");
+            flag = false;
+            delay(1000);
+          }
         }
+        else if (volume_completed >= 300)
+        {
+          reservoir_completed();
+        }
+
       }
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -262,40 +271,47 @@ void pulse_function_basal()
     {
       while (count < max_step)
       {
+        if (volume_completed != 300)
+        {
 
-        digitalWrite(dirPin, HIGH);
-        for (int x = 0; x < pulse; x++)
-        {
-          digitalWrite(stepPin, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin, LOW);
-          delayMicroseconds(500);
-        }
-        count++;
-        //delay(1000);
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Basal Injected:");
-        lcd.setCursor(0, 1);
-        lcd.print(count * 0.2);
-        lcd.setCursor(5, 1);
-        lcd.print("Units");
-        //Serial.println("Basal Insulin Units Injected:");
-        //Serial.println(count * 0.2);
-        delay(delay_time);
-        if (flag == true)
-        {
-          //delay(300);
+          digitalWrite(dirPin, HIGH);
+          for (int x = 0; x < pulse; x++)
+          {
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(500);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(500);
+          }
+          count++;
+          //delay(1000);
           lcd.clear();
           lcd.setCursor(0, 0);
-          lcd.print("Wait till ");
+          lcd.print("Basal Injected:");
           lcd.setCursor(0, 1);
-          lcd.print("basal finishes");
-          delay(1000);
-          flag = false;
-          //Serial.println("");
-          //Serial.println("Wait till the basal finishes");
-          //Serial.println("");
+          lcd.print(count * 0.2);
+          lcd.setCursor(5, 1);
+          lcd.print("Units");
+          //Serial.println("Basal Insulin Units Injected:");
+          //Serial.println(count * 0.2);
+          delay(delay_time);
+          if (flag == true)
+          {
+            //delay(300);
+            lcd.clear();
+            lcd.setCursor(0, 0);
+            lcd.print("Wait till ");
+            lcd.setCursor(0, 1);
+            lcd.print("basal finishes");
+            delay(1000);
+            flag = false;
+            //Serial.println("");
+            //Serial.println("Wait till the basal finishes");
+            //Serial.println("");
+          }
+        }
+        else if (volume_completed >= 300)
+        {
+          reservoir_completed();
         }
       }
       time_now = millis();
@@ -325,41 +341,47 @@ void pulse_function_basal()
     {
       while (count < max_step)
       {
-
-        digitalWrite(dirPin, HIGH);
-        for (int x = 0; x < pulse; x++)
+        if (volume_completed != 300)
         {
-          digitalWrite(stepPin, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin, LOW);
-          delayMicroseconds(500);
-        } Serial.println("Current Pulse Rate:");
-        Serial.println(pulse);
-        count++;
-        //delay(1000);
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Basal Injected:");
-        lcd.setCursor(0, 1);
-        lcd.print(count * 0.5);
-        lcd.setCursor(5, 1);
-        lcd.print("Units");
-        //Serial.println("Basal Insulin Units Injected:");
-        //Serial.println(count * 0.5);
-        delay(delay_time);
-        if (flag == true)
-        {
-          //delay(300);
+          digitalWrite(dirPin, HIGH);
+          for (int x = 0; x < pulse; x++)
+          {
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(500);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(500);
+          } Serial.println("Current Pulse Rate:");
+          Serial.println(pulse);
+          count++;
+          //delay(1000);
           lcd.clear();
           lcd.setCursor(0, 0);
-          lcd.print("Wait till ");
+          lcd.print("Basal Injected:");
           lcd.setCursor(0, 1);
-          lcd.print("basal finishes");
-          delay(1000);
-          flag = false;
-          //Serial.println("");
-          //Serial.println("Wait till the basal finishes");
-          //Serial.println("");
+          lcd.print(count * 0.5);
+          lcd.setCursor(5, 1);
+          lcd.print("Units");
+          //Serial.println("Basal Insulin Units Injected:");
+          //Serial.println(count * 0.5);
+          delay(delay_time);
+          if (flag == true)
+          {
+            //delay(300);
+            lcd.clear();
+            lcd.setCursor(0, 0);
+            lcd.print("Wait till ");
+            lcd.setCursor(0, 1);
+            lcd.print("basal finishes");
+            delay(1000);
+            flag = false;
+            //Serial.println("");
+            //Serial.println("Wait till the basal finishes");
+            //Serial.println("");
+          }
+        }
+        else if (volume_completed >= 300)
+        {
+          reservoir_completed();
         }
       }
       time_now = millis();
@@ -389,39 +411,46 @@ void pulse_function_basal()
     {
       while (count < max_step)
       {
-        digitalWrite(dirPin, HIGH);
-        for (int x = 0; x < pulse; x++)
+        if (volume_completed != 300)
         {
-          digitalWrite(stepPin, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin, LOW);
-          delayMicroseconds(500);
-        }
-        count++;
-        //delay(1000);
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Basal Injected:");
-        lcd.setCursor(0, 1);
-        lcd.print(count * 0.8);
-        lcd.setCursor(5, 1);
-        lcd.print("Units");
-        //Serial.println("Basal Insulin Units Injected:");
-        //Serial.println(count * 0.8);
-        delay(delay_time);
-        if (flag == true)
-        {
-          //delay(300);
+          digitalWrite(dirPin, HIGH);
+          for (int x = 0; x < pulse; x++)
+          {
+            digitalWrite(stepPin, HIGH);
+            delayMicroseconds(500);
+            digitalWrite(stepPin, LOW);
+            delayMicroseconds(500);
+          }
+          count++;
+          //delay(1000);
           lcd.clear();
           lcd.setCursor(0, 0);
-          lcd.print("Wait till ");
+          lcd.print("Basal Injected:");
           lcd.setCursor(0, 1);
-          lcd.print("basal finishes");
-          delay(1000);
-          flag  = false;
-          //Serial.println("");
-          //Serial.println("Wait till the basal finishes");
-          //Serial.println("");
+          lcd.print(count * 0.8);
+          lcd.setCursor(5, 1);
+          lcd.print("Units");
+          //Serial.println("Basal Insulin Units Injected:");
+          //Serial.println(count * 0.8);
+          delay(delay_time);
+          if (flag == true)
+          {
+            //delay(300);
+            lcd.clear();
+            lcd.setCursor(0, 0);
+            lcd.print("Wait till ");
+            lcd.setCursor(0, 1);
+            lcd.print("basal finishes");
+            delay(1000);
+            flag  = false;
+            //Serial.println("");
+            //Serial.println("Wait till the basal finishes");
+            //Serial.println("");
+          }
+        }
+        else if (volume_completed >= 300)
+        {
+          reservoir_completed();
         }
       }
       time_now = millis();
@@ -510,61 +539,73 @@ void bolus_function()
 //pulse function based on different bolus level
 void pulse_function_bolus()
 {
-  int count = 0;
-
   if (pulse_bol == 128)
   {
-    while (count < max_step_bol)
+    while (count_bol < max_step_bol)
     {
-      digitalWrite(dirPin, HIGH);
-      for (int x = 0; x < pulse_bol; x++)
+      if (volume_completed != 300)
       {
-        digitalWrite(stepPin, HIGH);
-        delayMicroseconds(500);
-        digitalWrite(stepPin, LOW);
-        delayMicroseconds(500);
+        digitalWrite(dirPin, HIGH);
+        for (int x = 0; x < pulse_bol; x++)
+        {
+          digitalWrite(stepPin, HIGH);
+          delayMicroseconds(500);
+          digitalWrite(stepPin, LOW);
+          delayMicroseconds(500);
+        }
+        count_bol++;
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Bolus Injected");
+        lcd.setCursor(0, 1);
+        lcd.print(count_bol * 0.2);
+        lcd.setCursor(5, 1);
+        lcd.print("Units");
+        //Serial.println("Bolus Insulin Units Injected:");
+        //Serial.println(count * 0.2);
+        delay(delay_time_bol);
       }
-      count++;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Bolus Injected");
-      lcd.setCursor(0, 1);
-      lcd.print(count * 0.2);
-      lcd.setCursor(5, 1);
-      lcd.print("Units");
-      //Serial.println("Bolus Insulin Units Injected:");
-      //Serial.println(count * 0.2);
-      delay(delay_time_bol);
+      else if (volume_completed >= 300)
+      {
+        reservoir_completed();
+      }
     }
   }
   else if (pulse_bol == 256)
   {
-    while (count < max_step_bol)
+    while (count_bol < max_step_bol)
     {
-      digitalWrite(dirPin, HIGH);
-      for (int x = 0; x < pulse_bol; x++)
+      if (volume_completed != 300)
       {
-        digitalWrite(stepPin, HIGH);
-        delayMicroseconds(500);
-        digitalWrite(stepPin, LOW);
-        delayMicroseconds(500);
+        digitalWrite(dirPin, HIGH);
+        for (int x = 0; x < pulse_bol; x++)
+        {
+          digitalWrite(stepPin, HIGH);
+          delayMicroseconds(500);
+          digitalWrite(stepPin, LOW);
+          delayMicroseconds(500);
+        }
+        count_bol++;
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Bolus Injected");
+        lcd.setCursor(0, 1);
+        lcd.print(count_bol * 0.5);
+        lcd.setCursor(5, 1);
+        lcd.print("Units");
+        //Serial.println("Bolus Insulin Units Injected:");
+        //Serial.println(count * 0.5);
+        delay(delay_time_bol);
       }
-      count++;
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Bolus Injected");
-      lcd.setCursor(0, 1);
-      lcd.print(count * 0.5);
-      lcd.setCursor(5, 1);
-      lcd.print("Units");
-      //Serial.println("Bolus Insulin Units Injected:");
-      //Serial.println(count * 0.5);
-      delay(delay_time_bol);
+      else if (volume_completed >= 300)
+      {
+        reservoir_completed();
+      }
     }
   }
   else if (pulse_bol == 512)
   {
-    while (count < max_step_bol)
+    while (count_bol < max_step_bol)
     {
       digitalWrite(dirPin, HIGH);
       for (int x = 0; x < pulse_bol; x++)
@@ -574,11 +615,12 @@ void pulse_function_bolus()
         digitalWrite(stepPin, LOW);
         delayMicroseconds(500);
       }
+      count_bol++;
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Bolus Injected");
       lcd.setCursor(0, 1);
-      lcd.print(count * 0.8);
+      lcd.print(count_bol * 0.8);
       lcd.setCursor(5, 1);
       lcd.print("Units");
       //Serial.println("Bolus Insulin Units Injected:");
@@ -586,4 +628,17 @@ void pulse_function_bolus()
       delay(delay_time_bol);
     }
   }
+}
+
+void reservoir_completed() {
+  lcd.clear();
+  for ( int i = 0 ; i <= 3 ; i++)
+  {
+    lcd.clear();
+    lcd.print("ALERT!");
+    delay(200);
+  }
+  lcd.clear();
+  lcd.print("Reservoir Empty");
+  // Rewinding code yet to write and all this is blind build; Precision can be achieved only through encoders and some other methods
 }
