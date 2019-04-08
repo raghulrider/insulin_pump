@@ -4,11 +4,10 @@ LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
 const int stepPin = 6;
 const int dirPin = 4;
-long pulse;
-int max_step;
-long bolus_insulin;           /*---------------------------------------------------------required variables-----------------------------------------------------*/
-long basal_insulin;
-long delay_time;
+long pulse, pulse_bol;
+int max_step, max_step_bol;
+long bolus_insulin, basal_insulin;           /*---------------------------------------------------------required variables-----------------------------------------------------*/
+long delay_time, delay_time_bol;
 double basal_insulin_ph;
 double hours = 24.00;
 volatile int flag = false;
@@ -481,21 +480,21 @@ void bolus_function()
   delay(2000);
   if (bolus_insulin <= 10)
   {
-    pulse = 128;                                               //taking pulse as 256 ie., 16 steps per revolution for bolus injection
-    max_step  = bolus_insulin / 0.2;                           //considering it can give 0.2 units per step
-    delay_time = 3000;                                         //for example alone, its not for final
+    pulse_bol = 128;                                               //taking pulse as 256 ie., 16 steps per revolution for bolus injection
+    max_step_bol  = bolus_insulin / 0.2;                           //considering it can give 0.2 units per step
+    delay_time_bol = 3000;                                         //for example alone, its not for final
   }
   else if (bolus_insulin <= 15 && bolus_insulin > 10)
   {
-    pulse = 256;                                                 //taking pulse as 256 ie., 8 steps per revolution for bolus injection
-    max_step = bolus_insulin / 0.5;                              //considering it can give 0.5 units per step
-    delay_time = 1500;                                           //for example alone. its not for final
+    pulse_bol = 256;                                                 //taking pulse as 256 ie., 8 steps per revolution for bolus injection
+    max_step_bol = bolus_insulin / 0.5;                              //considering it can give 0.5 units per step
+    delay_time_bol = 1500;                                           //for example alone. its not for final
   }
   else if (bolus_insulin <= 20 && bolus_insulin > 15)
   {
-    pulse = 512;                                                 //taking pulse as 256 ie., 8 steps per revolution for bolus injection
-    max_step = bolus_insulin / 0.8;                              //considering it can give 0.5 units per step
-    delay_time = 1000;                                           //for example alone. its not for final
+    pulse_bol = 512;                                                 //taking pulse as 256 ie., 8 steps per revolution for bolus injection
+    max_step_bol = bolus_insulin / 0.8;                              //considering it can give 0.5 units per step
+    delay_time_bol = 1000;                                           //for example alone. its not for final
   }
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -513,12 +512,12 @@ void pulse_function_bolus()
 {
   int count = 0;
 
-  if (pulse == 128)
+  if (pulse_bol == 128)
   {
-    while (count < max_step)
+    while (count < max_step_bol)
     {
       digitalWrite(dirPin, HIGH);
-      for (int x = 0; x < pulse; x++)
+      for (int x = 0; x < pulse_bol; x++)
       {
         digitalWrite(stepPin, HIGH);
         delayMicroseconds(500);
@@ -535,15 +534,15 @@ void pulse_function_bolus()
       lcd.print("Units");
       //Serial.println("Bolus Insulin Units Injected:");
       //Serial.println(count * 0.2);
-      delay(delay_time);
+      delay(delay_time_bol);
     }
   }
-  else if (pulse == 256)
+  else if (pulse_bol == 256)
   {
-    while (count < max_step)
+    while (count < max_step_bol)
     {
       digitalWrite(dirPin, HIGH);
-      for (int x = 0; x < pulse; x++)
+      for (int x = 0; x < pulse_bol; x++)
       {
         digitalWrite(stepPin, HIGH);
         delayMicroseconds(500);
@@ -560,15 +559,15 @@ void pulse_function_bolus()
       lcd.print("Units");
       //Serial.println("Bolus Insulin Units Injected:");
       //Serial.println(count * 0.5);
-      delay(delay_time);
+      delay(delay_time_bol);
     }
   }
-  else if (pulse == 512)
+  else if (pulse_bol == 512)
   {
-    while (count < max_step)
+    while (count < max_step_bol)
     {
       digitalWrite(dirPin, HIGH);
-      for (int x = 0; x < pulse; x++)
+      for (int x = 0; x < pulse_bol; x++)
       {
         digitalWrite(stepPin, HIGH);
         delayMicroseconds(500);
@@ -584,7 +583,7 @@ void pulse_function_bolus()
       lcd.print("Units");
       //Serial.println("Bolus Insulin Units Injected:");
       //Serial.println(count * 0.8);
-      delay(delay_time);
+      delay(delay_time_bol);
     }
   }
 }
