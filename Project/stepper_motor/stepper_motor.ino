@@ -18,18 +18,18 @@ long volume_finished = 0;
 
 //Input & Button Logic
 const int numOfInputs = 4;
-const int inputPins[numOfInputs] = {8,9,10,11};
+const int inputPins[numOfInputs] = {8, 9, 10, 11};
 int inputState[numOfInputs];
-int lastInputState[numOfInputs] = {LOW,LOW,LOW,LOW};
-bool inputFlags[numOfInputs] = {LOW,LOW,LOW,LOW};
-long lastDebounceTime[numOfInputs] = {0,0,0,0};
+int lastInputState[numOfInputs] = {LOW, LOW, LOW, LOW};
+bool inputFlags[numOfInputs] = {LOW, LOW, LOW, LOW};
+long lastDebounceTime[numOfInputs] = {0, 0, 0, 0};
 long debounceDelay = 5;
 volatile int set_flag = false;
 
 //LCD Menu Logic
 const int numOfScreens = 2;
 int currentScreen = 0;
-String screens[numOfScreens][2] = {{"Basal Menu","Units"}, {"Bolus Menu", "Units"}};
+String screens[numOfScreens][2] = {{"Basal Menu", "Units"}, {"Bolus Menu", "Units"}};
 int parameters[numOfScreens];
 char welcome[] = ("Welcome to Smart Flow!                ");
 
@@ -43,20 +43,20 @@ void setup() {
     lcd.print(welcome[i]);
     delay(350);
   }
-  for(int i = 0; i < numOfInputs; i++) {
+  for (int i = 0; i < numOfInputs; i++) {
     pinMode(inputPins[i], INPUT);
     digitalWrite(inputPins[i], HIGH); // pull-up 20k
   }
-   attachInterrupt(digitalPinToInterrupt(3), set_value, RISING);
-   attachInterrupt(digitalPinToInterrupt(2), bolus_interrupt_flag, RISING);
+  attachInterrupt(digitalPinToInterrupt(3), set_value, RISING);
+  attachInterrupt(digitalPinToInterrupt(2), bolus_interrupt_flag, RISING);
   //Serial.begin(9600);
 }
 
 void loop() {
   if (set_flag == false)
   {
-  setInputFlags();
-  resolveInputFlags();
+    setInputFlags();
+    resolveInputFlags();
   }
   else
   {
@@ -64,12 +64,12 @@ void loop() {
   }
 }
 
-void set_value(){
+void set_value() {
   set_flag = true;
 }
 
 void setInputFlags() {
-  for(int i = 0; i < numOfInputs; i++) {
+  for (int i = 0; i < numOfInputs; i++) {
     int reading = digitalRead(inputPins[i]);
     if (reading != lastInputState[i]) {
       lastDebounceTime[i] = millis();
@@ -87,8 +87,8 @@ void setInputFlags() {
 }
 
 void resolveInputFlags() {
-  for(int i = 0; i < numOfInputs; i++) {
-    if(inputFlags[i] == HIGH) {
+  for (int i = 0; i < numOfInputs; i++) {
+    if (inputFlags[i] == HIGH) {
       inputAction(i);
       inputFlags[i] = LOW;
       printScreen();
@@ -97,29 +97,29 @@ void resolveInputFlags() {
 }
 
 void inputAction(int input) {
-  if(input == 0) {
+  if (input == 0) {
     if (currentScreen == 0) {
-      currentScreen = numOfScreens-1;
-    }else{
+      currentScreen = numOfScreens - 1;
+    } else {
       currentScreen--;
     }
-  }else if(input == 1) {
-    if (currentScreen == numOfScreens-1) {
+  } else if (input == 1) {
+    if (currentScreen == numOfScreens - 1) {
       currentScreen = 0;
-    }else{
+    } else {
       currentScreen++;
     }
-  }else if(input == 2) {
+  } else if (input == 2) {
     parameterChange(0);
-  }else if(input == 3) {
+  } else if (input == 3) {
     parameterChange(1);
   }
 }
 
 void parameterChange(int key) {
-  if(key == 0) {
+  if (key == 0) {
     parameters[currentScreen]++;
-  }else if(key == 1) {
+  } else if (key == 1) {
     parameters[currentScreen]--;
   }
 }
@@ -127,7 +127,7 @@ void parameterChange(int key) {
 void printScreen() {
   lcd.clear();
   lcd.print(screens[currentScreen][0]);
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print(parameters[currentScreen]);
   lcd.print(" ");
   lcd.print(screens[currentScreen][1]);
@@ -144,16 +144,16 @@ void basal_function()
 {
   flag = false;
   lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("Press again");
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print("to Confirm");
-  while ( flag == false){
-    }
+  while ( flag == false) {
+  }
   flag = false;
   lcd.clear();
   lcd.print("Basal Set to:");
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print(parameters[0]);
   lcd.print(" ");
   lcd.print("Units");
@@ -216,7 +216,7 @@ void pulse_function_basal()
         lcd.print("Basal Injected:");
         lcd.setCursor(0, 1);
         lcd.print(count * 0.1);
-        lcd.setCursor(5,1);
+        lcd.setCursor(5, 1);
         lcd.print("Units");
         delay(delay_time);
         if (flag == true)
@@ -230,13 +230,13 @@ void pulse_function_basal()
           delay(1000);
         }
       }
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Basal Injected:");
-        lcd.setCursor(0, 1);
-        lcd.print(count * 0.1);
-        lcd.setCursor(5,1);
-        lcd.print("Units");
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Basal Injected:");
+      lcd.setCursor(0, 1);
+      lcd.print(count * 0.1);
+      lcd.setCursor(5, 1);
+      lcd.print("Units");
       time_now = millis();
       while (millis() < time_now  + (3600000 - max_step * (1 + delay_time)))
       {
@@ -279,7 +279,7 @@ void pulse_function_basal()
         lcd.print("Basal Injected:");
         lcd.setCursor(0, 1);
         lcd.print(count * 0.2);
-        lcd.setCursor(5,1);
+        lcd.setCursor(5, 1);
         lcd.print("Units");
         //Serial.println("Basal Insulin Units Injected:");
         //Serial.println(count * 0.2);
@@ -343,7 +343,7 @@ void pulse_function_basal()
         lcd.print("Basal Injected:");
         lcd.setCursor(0, 1);
         lcd.print(count * 0.5);
-        lcd.setCursor(5,1);
+        lcd.setCursor(5, 1);
         lcd.print("Units");
         //Serial.println("Basal Insulin Units Injected:");
         //Serial.println(count * 0.5);
@@ -405,7 +405,7 @@ void pulse_function_basal()
         lcd.print("Basal Injected:");
         lcd.setCursor(0, 1);
         lcd.print(count * 0.8);
-        lcd.setCursor(5,1);
+        lcd.setCursor(5, 1);
         lcd.print("Units");
         //Serial.println("Basal Insulin Units Injected:");
         //Serial.println(count * 0.8);
@@ -459,13 +459,13 @@ void bolus_function()
   delay(200);
   flag = false;
   lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("Are you sure, ");
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print("suspend basal?");
-  while(flag == false)
+  while (flag == false)
   {
-    
+
   }
   flag = false;
   delay(1000);
@@ -474,7 +474,7 @@ void bolus_function()
   delay(1000);
   lcd.clear();
   lcd.print("Bolus Set to:");
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
   lcd.print(bolus_insulin);
   lcd.print(" ");
   lcd.print("Units");
@@ -531,7 +531,7 @@ void pulse_function_bolus()
       lcd.print("Bolus Injected");
       lcd.setCursor(0, 1);
       lcd.print(count * 0.2);
-      lcd.setCursor(5,1);
+      lcd.setCursor(5, 1);
       lcd.print("Units");
       //Serial.println("Bolus Insulin Units Injected:");
       //Serial.println(count * 0.2);
@@ -556,7 +556,7 @@ void pulse_function_bolus()
       lcd.print("Bolus Injected");
       lcd.setCursor(0, 1);
       lcd.print(count * 0.5);
-      lcd.setCursor(5,1);
+      lcd.setCursor(5, 1);
       lcd.print("Units");
       //Serial.println("Bolus Insulin Units Injected:");
       //Serial.println(count * 0.5);
@@ -580,7 +580,7 @@ void pulse_function_bolus()
       lcd.print("Bolus Injected");
       lcd.setCursor(0, 1);
       lcd.print(count * 0.8);
-      lcd.setCursor(5,1);
+      lcd.setCursor(5, 1);
       lcd.print("Units");
       //Serial.println("Bolus Insulin Units Injected:");
       //Serial.println(count * 0.8);
