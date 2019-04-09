@@ -1,9 +1,12 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <DS3231.h>
+
+DS3231  rtc(SDA, SCL);
 LiquidCrystal_I2C lcd(0x3F, 16, 2);
 
-const int stepPin = 6;
-const int dirPin = 4;
+const int stepPin = 3;
+const int dirPin = 2;
 long pulse, pulse_bol;
 int max_step, max_step_bol;
 long bolus_insulin, basal_insulin;           /*---------------------------------------------------------required variables-----------------------------------------------------*/
@@ -14,7 +17,7 @@ volatile int flag = false;
 unsigned long time_now = 0;
 long volume_completed = 0;
 int count = 0, count_bol = 0;
-
+const int beep = 12;
 
 //Input & Button Logic
 const int numOfInputs = 4;
@@ -34,8 +37,13 @@ int parameters[numOfScreens];
 char welcome[] = ("Welcome to Smart Flow!                ");
 
 void setup() {
+  pinMode(beep, OUTPUT);
   lcd.init();
   lcd.backlight();
+  rtc.begin();
+  //rtc.setDOW(MONDAY);     // Set Day-of-Week to SUNDAY
+  //rtc.setTime(15, 49, 30);     // Set the time to 12:00:00 (24hr format)
+  //rtc.setDate(4, 9, 2019);
   lcd.setCursor(15, 0);
   for ( int i = 0; i < 37; i++)
   {
@@ -47,9 +55,9 @@ void setup() {
     pinMode(inputPins[i], INPUT);
     digitalWrite(inputPins[i], HIGH); // pull-up 20k
   }
-  attachInterrupt(digitalPinToInterrupt(3), set_value, RISING);
-  attachInterrupt(digitalPinToInterrupt(2), bolus_interrupt_flag, RISING);
-  //Serial.begin(9600);
+  attachInterrupt(digitalPinToInterrupt(18), set_value, RISING);
+  attachInterrupt(digitalPinToInterrupt(19), bolus_interrupt_flag, RISING);
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -142,6 +150,12 @@ void bolus_interrupt_flag()
 //void loop for basal menu
 void basal_function()
 {
+  Serial.println("Basal Started at:");
+  Serial.print(rtc.getDOWStr());
+  Serial.print(" ");
+  Serial.print(rtc.getDateStr());
+  Serial.print(" -- ");
+  Serial.println(rtc.getTimeStr());
   flag = false;
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -250,6 +264,17 @@ void pulse_function_basal()
       {
         if (flag == true)
         {
+          delay(200);
+          flag = false;
+          lcd.clear();
+          lcd.setCursor(0, 0);
+          lcd.print("Are you sure, ");
+          lcd.setCursor(0, 1);
+          lcd.print("suspend basal?");
+          while (flag == false) {
+          }
+          delay(1000);
+          flag = false;
           delay(1000);
           bolus_function();
           flag = false;
@@ -483,20 +508,13 @@ void pulse_function_basal()
 //void loop for bolus menu
 void bolus_function()
 {
+  Serial.println("Bolus Started at:");
+  Serial.print(rtc.getDOWStr());
+  Serial.print(" ");
+  Serial.print(rtc.getDateStr());
+  Serial.print(" -- ");
+  Serial.println(rtc.getTimeStr());
   bolus_insulin = parameters[1];
-  delay(200);
-  flag = false;
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Are you sure, ");
-  lcd.setCursor(0, 1);
-  lcd.print("suspend basal?");
-  while (flag == false)
-  {
-
-  }
-  flag = false;
-  delay(1000);
   lcd.clear();
   lcd.print("Basal Suspended");
   delay(1000);
@@ -525,11 +543,6 @@ void bolus_function()
     max_step_bol = bolus_insulin / 0.8;                              //considering it can give 0.5 units per step
     delay_time_bol = 1000;                                           //for example alone. its not for final
   }
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Bolus set to:");
-  lcd.setCursor(0, 1);
-  lcd.print(bolus_insulin);
   pulse_function_bolus();
 }
 
@@ -539,6 +552,7 @@ void bolus_function()
 //pulse function based on different bolus level
 void pulse_function_bolus()
 {
+  count_bol = 0;
   if (pulse_bol == 128)
   {
     while (count_bol < max_step_bol)
@@ -566,7 +580,9 @@ void pulse_function_bolus()
         delay(delay_time_bol);
       }
       else if (volume_completed >= 300)
-      {
+      {lcd.clear();
+    lcd.print("List laye illa");
+    delay(1000);
         reservoir_completed();
       }
     }
@@ -631,14 +647,19 @@ void pulse_function_bolus()
 }
 
 void reservoir_completed() {
-  lcd.clear();
-  for ( int i = 0 ; i <= 3 ; i++)
+  flag = false;
+  while (flag = ! true)
   {
     lcd.clear();
+    lcd.setCursor(0, 0);
     lcd.print("ALERT!");
-    delay(200);
+    lcd.setCursor(0, 1);
+    lcd.print("Reservoir Empty");
+    tone(beep, 1000);
+    delay(500);
+    lcd.clear();
+    noTone(beep);
+    delay(500);
   }
-  lcd.clear();
-  lcd.print("Reservoir Empty");
   // Rewinding code yet to write and all this is blind build; Precision can be achieved only through encoders and some other methods
 }
