@@ -15,7 +15,7 @@ void loop()
   lcd.setCursor(0,0);
   lcd.print("ALERT!");
   lcd.setCursor(0,1);
-  lcd.print("Reservoir Full");
+  lcd.print("Reservoir Empty");
   tone(beep, 1000);
   delay(500);
   lcd.clear();
